@@ -45,6 +45,11 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
+# 112.02.28 add MQTT code
+pub_topic = "ToFeeder"
+sub_topic = "ToLINEBot"
+port = 5000
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
