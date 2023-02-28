@@ -48,7 +48,6 @@ parser = WebhookParser(channel_secret)
 # 112.02.28 add MQTT code
 pub_topic = "ToFeeder"
 sub_topic = "ToLINEBot"
-port = 5000
 
 
 @app.route("/callback", methods=['POST'])
