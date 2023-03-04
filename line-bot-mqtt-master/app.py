@@ -46,8 +46,18 @@ line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
 # 112.02.28 add MQTT code
-pub_topic = "ToFeeder"
-sub_topic = "ToLINEBot"
+pub_topic = "To/Feeder"
+sub_topic = "From/Feeder"
+broker_address = "broker.hivemq.com"
+broker_port = 1883
+
+# The callback for when the client receives a CONNACK response from the server.
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
 
 
 @app.route("/callback", methods=['POST'])
@@ -86,5 +96,12 @@ if __name__ == "__main__":
     arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
     arg_parser.add_argument('-d', '--debug', default=False, help='debug')
     options = arg_parser.parse_args()
+    
+    # MQTT code is added on 112.03.04
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(broker_address, port = broker_port)
+    client.loop_start()
 
     app.run(debug=options.debug, port=options.port)
