@@ -30,6 +30,12 @@ from linebot.models import (
 
 import paho.mqtt.client as mqtt
 
+# 112.02.28 add MQTT code
+pub_topic = "To/Feeder"
+sub_topic = "From/Feeder"
+broker_address = "broker.hivemq.com"
+broker_port = 1883
+
 app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
@@ -44,12 +50,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
-
-# 112.02.28 add MQTT code
-pub_topic = "To/Feeder"
-sub_topic = "From/Feeder"
-broker_address = "broker.hivemq.com"
-broker_port = 1883
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -90,8 +90,6 @@ def callback():
 
 
 if __name__ == "__main__":
-    global broker_address
-    global broker_port
     
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
@@ -104,7 +102,7 @@ if __name__ == "__main__":
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect(broker_address, port = broker_port)
+    client.connect("broker.hivemq.com", port = 1883)
     client.loop_start()
 
     app.run(debug=options.debug, port=options.port)
