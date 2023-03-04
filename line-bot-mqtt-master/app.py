@@ -90,6 +90,9 @@ def callback():
 
 
 if __name__ == "__main__":
+    global broker_address
+    global broker_port
+    
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
     )
