@@ -1,4 +1,4 @@
-line-bot-sdk=2.4.1
+line-bot-sdk==2.4.1
 Flask==2.2.3
 paho-mqtt==1.6.1
 Flask-MQTT==1.1.1
