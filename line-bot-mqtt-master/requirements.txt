@@ -1,3 +1,5 @@
-line-bot-sdk
-flask
-paho-mqtt
+line-bot-sdk=2.4.1
+Flask==2.2.3
+paho-mqtt==1.6.1
+Flask-MQTT==1.1.1
+Flask-SocketIO==5.3.2

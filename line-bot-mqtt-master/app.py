@@ -28,7 +28,8 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
-import paho.mqtt.client as mqtt
+#import paho.mqtt.client as mqtt
+from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 
@@ -73,7 +74,7 @@ def callback():
 
     return 'OK'
 
-
+'''
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -82,6 +83,33 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
+'''
+
+app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = ''  # 当你需要验证用户名和密码时，请设置该项
+app.config['MQTT_PASSWORD'] = ''  # 当你需要验证用户名和密码时，请设置该项
+app.config['MQTT_KEEPALIVE'] = 5  # 设置心跳时间，单位为秒
+app.config['MQTT_TLS_ENABLED'] = True  # 如果你的服务器支持 TLS，请设置为 True
+topic = '/flask/mqtt'
+
+mqtt_client = Mqtt(app)
+
+@mqtt_client.on_connect()
+def handle_connect(client, userdata, flags, rc):
+   if rc == 0:
+       print('Connected successfully')
+       mqtt_client.subscribe(topic)
+   else:
+       print('Bad connection. Code:', rc)
+       
+@mqtt_client.on_message()
+def handle_mqtt_message(client, userdata, message):
+   data = dict(
+       topic=message.topic,
+       payload=message.payload.decode()
+  )
+   print('Received message on topic: {topic} with payload: {payload}'.format(**data))
 
 if __name__ == "__main__":
     
@@ -92,11 +120,13 @@ if __name__ == "__main__":
     arg_parser.add_argument('-d', '--debug', default=False, help='debug')
     options = arg_parser.parse_args()
     
+    '''
     # MQTT code is added on 112.03.04
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect("broker.hivemq.com", port = 1883, keepalive = 60)
     client.loop_start()
+    '''
 
     app.run(debug=options.debug, port=options.port)
