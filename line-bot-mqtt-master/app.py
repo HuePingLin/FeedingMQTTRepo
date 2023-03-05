@@ -77,6 +77,7 @@ def callback():
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
+    client.publish("To/Feeder", "TEST_From_Render")
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
