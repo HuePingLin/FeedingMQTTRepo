@@ -33,8 +33,8 @@ import paho.mqtt.client as mqtt
 # 112.02.28 add MQTT code
 pub_topic = "To/Feeder"
 sub_topic = "From/Feeder"
-broker_address = "broker.hivemq.com"
-broker_port = 1883
+#broker_address = "broker.hivemq.com"
+#broker_port = 1883
 
 app = Flask(__name__)
 
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect("broker.hivemq.com", port = 1883)
+    client.connect("broker.hivemq.com", port = 1883, keepalive = 60)
     client.loop_start()
 
     app.run(debug=options.debug, port=options.port)
