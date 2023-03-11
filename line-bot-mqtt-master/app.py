@@ -18,6 +18,10 @@ import sys
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
+# added on 112.03.11
+from flask_socketio import socketio
+from flask_bootstrap import Bootstrap
+
 from linebot import (
     LineBotApi, WebhookParser
 )
@@ -90,10 +94,13 @@ app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''  # 当你需要验证用户名和密码时，请设置该项
 app.config['MQTT_PASSWORD'] = ''  # 当你需要验证用户名和密码时，请设置该项
 app.config['MQTT_KEEPALIVE'] = 5  # 设置心跳时间，单位为秒
-app.config['MQTT_TLS_ENABLED'] = True  # 如果你的服务器支持 TLS，请设置为 True
+app.config['MQTT_TLS_ENABLED'] = False  # 如果你的服务器支持 TLS，请设置为 True
+app.config['MQTT_CLEAN_SESSION'] = True
 topic = '/flask/mqtt'
 
 mqtt_client = Mqtt(app)
+socketio = SocketIO(app)
+bootstrap = Bootstrap(app)
 
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
@@ -129,4 +136,5 @@ if __name__ == "__main__":
     client.loop_start()
     '''
 
-    app.run(debug=options.debug, port=options.port)
+    #app.run(debug=options.debug, port=options.port)
+    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
