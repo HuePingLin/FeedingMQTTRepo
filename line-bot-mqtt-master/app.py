@@ -33,7 +33,7 @@ from linebot.models import (
 
 #import paho.mqtt.client as mqtt
 # modified on 112.03.11 
-
+from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 
