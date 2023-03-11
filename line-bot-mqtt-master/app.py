@@ -18,10 +18,6 @@ import sys
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
-<<<<<<< HEAD
-# added on 112.03.11
-=======
->>>>>>> ffc5539 (modify app.py)
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 
