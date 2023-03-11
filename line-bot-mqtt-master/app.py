@@ -18,7 +18,10 @@ import sys
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
+<<<<<<< HEAD
 # added on 112.03.11
+=======
+>>>>>>> ffc5539 (modify app.py)
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 
@@ -33,9 +36,20 @@ from linebot.models import (
 )
 
 #import paho.mqtt.client as mqtt
-from flask_mqtt import Mqtt
+# modified on 112.03.11 
+
 
 app = Flask(__name__)
+
+#app.config['SECRET'] = 'my secret key'
+#app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = ''
+app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_KEEPALIVE'] = 5
+app.config['MQTT_TLS_ENABLED'] = False
+app.config['MQTT_CLEAN_SESSION'] = True
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -48,7 +62,12 @@ if channel_access_token is None:
     sys.exit(1)
 
 line_bot_api = LineBotApi(channel_access_token)
-parser = WebhookParser(channel_secret)
+#parser = WebhookParser(channel_secret)
+handler = WebhookHandler('channel_secret')
+
+mqtt_client = Mqtt(app)
+socketio = SocketIO(app)
+bootstrap = Bootstrap(app)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -89,6 +108,7 @@ def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
 '''
 
+<<<<<<< HEAD
 app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''  # 当你需要验证用户名和密码时，请设置该项
@@ -101,7 +121,21 @@ topic = '/flask/mqtt'
 mqtt_client = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
+=======
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    message = event.message.text
+    # line_bot_api.reply_message(
+    #     event.reply_token,
+    #     TextSendMessage(text="Turn Off channel1"))
 
+>>>>>>> ffc5539 (modify app.py)
+
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    print(level, buf)
+
+'''
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
    if rc == 0:
@@ -117,6 +151,7 @@ def handle_mqtt_message(client, userdata, message):
        payload=message.payload.decode()
   )
    print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+'''
 
 if __name__ == "__main__":
     
