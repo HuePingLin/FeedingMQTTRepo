@@ -19,7 +19,7 @@ from argparse import ArgumentParser
 
 from flask import Flask, request, abort
 # added on 112.03.11
-from flask_socketio import socketio
+from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 
 from linebot import (
