@@ -108,20 +108,10 @@ def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
 '''
 
-<<<<<<< HEAD
-app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_USERNAME'] = ''  # 当你需要验证用户名和密码时，请设置该项
-app.config['MQTT_PASSWORD'] = ''  # 当你需要验证用户名和密码时，请设置该项
-app.config['MQTT_KEEPALIVE'] = 5  # 设置心跳时间，单位为秒
-app.config['MQTT_TLS_ENABLED'] = False  # 如果你的服务器支持 TLS，请设置为 True
-app.config['MQTT_CLEAN_SESSION'] = True
-topic = '/flask/mqtt'
-
 mqtt_client = Mqtt(app)
 socketio = SocketIO(app)
 bootstrap = Bootstrap(app)
-=======
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
@@ -129,7 +119,6 @@ def handle_message(event):
     #     event.reply_token,
     #     TextSendMessage(text="Turn Off channel1"))
 
->>>>>>> ffc5539 (modify app.py)
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
