@@ -22,7 +22,7 @@ from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 
 from linebot import (
-    LineBotApi, WebhookParser
+    LineBotApi, WebhookParser,WebhookHandler
 )
 from linebot.exceptions import (
     InvalidSignatureError
