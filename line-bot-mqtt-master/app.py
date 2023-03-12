@@ -102,7 +102,7 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
-'''
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -111,6 +111,7 @@ def handle_message(event):
     #     event.reply_token,
     #     TextSendMessage(text="Turn Off channel1"))
 
+'''
 
 @mqtt.on_log()
 def handle_logging(client, userdata, level, buf):
