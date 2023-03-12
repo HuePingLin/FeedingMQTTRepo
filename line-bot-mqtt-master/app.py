@@ -31,14 +31,17 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+import antolib
+
 #import paho.mqtt.client as mqtt
 # modified on 112.03.11 
 from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 
-#app.config['SECRET'] = 'my secret key'
-#app.config['TEMPLATES_AUTO_RELOAD'] = True
+'''
+app.config['SECRET'] = 'my secret key'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''
@@ -46,6 +49,7 @@ app.config['MQTT_PASSWORD'] = ''
 app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
 app.config['MQTT_CLEAN_SESSION'] = True
+'''
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -59,11 +63,34 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 #parser = WebhookParser(channel_secret)
-#handler = WebhookHandler('channel_secret')
+handler = WebhookHandler('channel_secret')
 
-mqtt_client = Mqtt(app)
-socketio = SocketIO(app)
+#mqtt_client = Mqtt(app)
+#socketio = SocketIO(app)
 #bootstrap = Bootstrap(app)
+
+user = os.getenv('ANTO_USERNAME',None)
+key = os.getenv('ANTO_KEY',None)
+thing = os.getenv('ANTO_THING',None)
+
+if user is None:
+    print('Specify ANTO_USERNAME as environment variable.')
+    sys.exit(1)
+if key is None:
+    print('Specify ANTO_KEY as environment variable.')
+    sys.exit(1)
+if anto_thing is None:
+    print('Specify ANTO_THING as environment variable.')
+    sys.exit(1)
+
+# username of anto.io account
+user = 'ANTO_USERNAME'
+# key of permission, generated on control panel anto.io
+key = 'ANTO_KEY'
+# your default thing.
+thing = 'ANTO_THING'
+
+anto = antolib.Anto(user, key, thing)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -102,7 +129,7 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
-
+'''
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -111,13 +138,14 @@ def handle_message(event):
     #     event.reply_token,
     #     TextSendMessage(text="Turn Off channel1"))
 
-'''
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code " + str(rc))
 
+'''
 @mqtt_client.on_log()
 def handle_logging(client, userdata, level, buf):
     print(level, buf)
 
-'''
 @mqtt_client.on_connect()
 def handle_connect(client, userdata, flags, rc):
    if rc == 0:
@@ -152,6 +180,7 @@ if __name__ == "__main__":
     client.connect("broker.hivemq.com", port = 1883, keepalive = 60)
     client.loop_start()
     '''
-
-    #app.run(debug=options.debug, port=options.port)
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    anto.mqtt.onConnect() = on_connect
+    anto.mqtt.connect()
+    app.run(debug=options.debug, port=options.port)
+    #socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
