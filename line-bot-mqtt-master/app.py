@@ -182,5 +182,6 @@ if __name__ == "__main__":
     '''
     anto.mqtt.onConnect = on_connect
     anto.mqtt.connect()
-    app.run(debug=options.debug, port=options.port)
+    #app.run(debug=options.debug, port=options.port)
+    app.run(debug=True, port=5000)
     #socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
