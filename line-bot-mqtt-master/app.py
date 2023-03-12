@@ -63,7 +63,7 @@ line_bot_api = LineBotApi(channel_access_token)
 
 mqtt_client = Mqtt(app)
 socketio = SocketIO(app)
-bootstrap = Bootstrap(app)
+#bootstrap = Bootstrap(app)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -103,10 +103,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
 '''
-
-mqtt_client = Mqtt(app)
-socketio = SocketIO(app)
-bootstrap = Bootstrap(app)
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
