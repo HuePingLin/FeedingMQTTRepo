@@ -79,7 +79,7 @@ if user is None:
 if key is None:
     print('Specify ANTO_KEY as environment variable.')
     sys.exit(1)
-if anto_thing is None:
+if thing is None:
     print('Specify ANTO_THING as environment variable.')
     sys.exit(1)
 
