@@ -31,11 +31,11 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
-import antolib
+#import antolib
 
-#import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 # modified on 112.03.11 
-from flask_mqtt import Mqtt
+#from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 
@@ -69,6 +69,7 @@ handler = WebhookHandler('channel_secret')
 #socketio = SocketIO(app)
 #bootstrap = Bootstrap(app)
 
+'''
 user = os.getenv('ANTO_USERNAME',None)
 key = os.getenv('ANTO_KEY',None)
 thing = os.getenv('ANTO_THING',None)
@@ -91,6 +92,7 @@ key = 'ANTO_KEY'
 thing = 'ANTO_THING'
 
 anto = antolib.Anto(user, key, thing)
+'''
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -172,16 +174,17 @@ if __name__ == "__main__":
     arg_parser.add_argument('-d', '--debug', default=False, help='debug')
     options = arg_parser.parse_args()
     
-    '''
+    
     # MQTT code is added on 112.03.04
     client = mqtt.Client()
     client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect("broker.hivemq.com", port = 1883, keepalive = 60)
+    #client.on_message = on_message
+    client.connect("broker.mqttdashboard.com", port = 1883)
     client.loop_start()
     '''
     anto.mqtt.onConnect = on_connect
     anto.mqtt.connect()
+    '''
     #app.run(debug=options.debug, port=options.port)
     app.run(debug=True, port=5000)
     #socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
