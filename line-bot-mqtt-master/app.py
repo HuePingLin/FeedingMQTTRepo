@@ -20,6 +20,8 @@ from argparse import ArgumentParser
 from flask import Flask, request, abort
 from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
+# 112.03.18加入
+from flask_cors import CORS
 
 from linebot import (
     LineBotApi, WebhookParser,WebhookHandler
@@ -38,6 +40,8 @@ import paho.mqtt.client as mqtt
 #from flask_mqtt import Mqtt
 
 app = Flask(__name__)
+# 112.03.18加入
+CORS(app)
 
 '''
 app.config['SECRET'] = 'my secret key'
@@ -65,6 +69,7 @@ line_bot_api = LineBotApi(channel_access_token)
 #parser = WebhookParser(channel_secret)
 handler = WebhookHandler('channel_secret')
 
+mqtt_client = mqtt(app)
 #mqtt_client = Mqtt(app)
 #socketio = SocketIO(app)
 #bootstrap = Bootstrap(app)
