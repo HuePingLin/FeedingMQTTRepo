@@ -69,7 +69,6 @@ line_bot_api = LineBotApi(channel_access_token)
 #parser = WebhookParser(channel_secret)
 handler = WebhookHandler('channel_secret')
 
-mqtt_client = mqtt(app)
 #mqtt_client = Mqtt(app)
 #socketio = SocketIO(app)
 #bootstrap = Bootstrap(app)
