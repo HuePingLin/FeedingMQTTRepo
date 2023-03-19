@@ -22,6 +22,7 @@ from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
 # 112.03.18加入
 from flask_cors import CORS
+from flask_sockets import Sockets
 
 from linebot import (
     LineBotApi, WebhookParser,WebhookHandler
@@ -33,27 +34,11 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
-#import antolib
-
 import paho.mqtt.client as mqtt
-# modified on 112.03.11 
-#from flask_mqtt import Mqtt
 
 app = Flask(__name__)
 # 112.03.18加入
 CORS(app)
-
-'''
-app.config['SECRET'] = 'my secret key'
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_USERNAME'] = ''
-app.config['MQTT_PASSWORD'] = ''
-app.config['MQTT_KEEPALIVE'] = 5
-app.config['MQTT_TLS_ENABLED'] = False
-app.config['MQTT_CLEAN_SESSION'] = True
-'''
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -70,9 +55,15 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler('channel_secret')
 
 #mqtt_client = Mqtt(app)
-socketio = SocketIO(app, cors_allowed_origins='*')
+#socketio = SocketIO(app, cors_allowed_origins='*')
+sockets = Sockets(app)
 #bootstrap = Bootstrap(app)
 
+@sockets.route('/echo')
+def echo_socket(ws):
+    while not ws.closed:
+        ws.send("Greetings from Render.com")
+        time.sleep(1)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -123,27 +114,6 @@ def handle_message(event):
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
 
-'''
-@mqtt_client.on_log()
-def handle_logging(client, userdata, level, buf):
-    print(level, buf)
-
-@mqtt_client.on_connect()
-def handle_connect(client, userdata, flags, rc):
-   if rc == 0:
-       print('Connected successfully')
-       mqtt_client.subscribe(topic)
-   else:
-       print('Bad connection. Code:', rc)
-       
-@mqtt_client.on_message()
-def handle_mqtt_message(client, userdata, message):
-   data = dict(
-       topic=message.topic,
-       payload=message.payload.decode()
-  )
-   print('Received message on topic: {topic} with payload: {payload}'.format(**data))
-'''
 
 if __name__ == "__main__":
     
@@ -157,12 +127,17 @@ if __name__ == "__main__":
     '''
     
     # MQTT code is added on 112.03.04
-    client = mqtt.Client()
-    client.on_connect = on_connect
+    #client = mqtt.Client()
+    #client.on_connect = on_connect
     #client.on_message = on_message
-    client.connect("broker.mqttdashboard.com", port = 8000)
-    client.loop_start()
+    #client.connect("broker.mqttdashboard.com", port = 1883)
+    #client.loop_start()
 
     #app.run(debug=options.debug, port=options.port)
     #app.run(debug=True, port=5000)
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    #socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    print('server start')
+    server.serve_forever()
