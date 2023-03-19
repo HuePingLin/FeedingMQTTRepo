@@ -70,33 +70,9 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler('channel_secret')
 
 #mqtt_client = Mqtt(app)
-#socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
 #bootstrap = Bootstrap(app)
 
-'''
-user = os.getenv('ANTO_USERNAME',None)
-key = os.getenv('ANTO_KEY',None)
-thing = os.getenv('ANTO_THING',None)
-
-if user is None:
-    print('Specify ANTO_USERNAME as environment variable.')
-    sys.exit(1)
-if key is None:
-    print('Specify ANTO_KEY as environment variable.')
-    sys.exit(1)
-if thing is None:
-    print('Specify ANTO_THING as environment variable.')
-    sys.exit(1)
-
-# username of anto.io account
-user = 'ANTO_USERNAME'
-# key of permission, generated on control panel anto.io
-key = 'ANTO_KEY'
-# your default thing.
-thing = 'ANTO_THING'
-
-anto = antolib.Anto(user, key, thing)
-'''
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -171,24 +147,22 @@ def handle_mqtt_message(client, userdata, message):
 
 if __name__ == "__main__":
     
+    '''
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
     )
     arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
     arg_parser.add_argument('-d', '--debug', default=False, help='debug')
     options = arg_parser.parse_args()
-    
+    '''
     
     # MQTT code is added on 112.03.04
     client = mqtt.Client()
     client.on_connect = on_connect
     #client.on_message = on_message
-    client.connect("broker.mqttdashboard.com", port = 1883)
+    client.connect("broker.mqttdashboard.com", port = 8000)
     client.loop_start()
-    '''
-    anto.mqtt.onConnect = on_connect
-    anto.mqtt.connect()
-    '''
+
     #app.run(debug=options.debug, port=options.port)
-    app.run(debug=True, port=5000)
-    #socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    #app.run(debug=True, port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
