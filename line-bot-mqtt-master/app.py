@@ -44,6 +44,7 @@ def handle_mqtt_message(client, userdata, message):
 @app.route('/publish')
 def publish_message():
     mqtt_client.publish(topic2,"Hello")
+    return "send message OK!"
 
 
 @app.route('/')
