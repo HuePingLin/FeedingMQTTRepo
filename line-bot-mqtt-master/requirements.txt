@@ -9,3 +9,5 @@ Flask-Cors
 Flask-Sockets
 gevent
 gevent-websocket
+requests
+json
