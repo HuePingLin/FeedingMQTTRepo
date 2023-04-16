@@ -35,7 +35,7 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
-@app.route('/callback')
+@app.route('/callback', methods=['POST'])
 def UpdateData():
     command = 'AAA'
     signature = request.headers['X-Line-Signature']
@@ -54,12 +54,13 @@ def UpdateData():
         if not isinstance(event.message, TextMessage):
             continue
         
-        command = event.message.text
+        #command = event.message.text
 
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=event.message.text)
         )
+    '''
     if len(command) > 0:
         iot_url = url + "/device/" + device_ID + "/rawdata"
         data = {'id':sensor_ID, 'save':True, 'value':['168']}
@@ -72,6 +73,8 @@ def UpdateData():
         return str(response.status_code)
     else:
         return "NO COMMAND!"
+    '''
+    return 'OK'
 
 
 @app.route('/')
