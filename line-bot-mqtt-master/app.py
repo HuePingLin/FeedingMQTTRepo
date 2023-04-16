@@ -54,28 +54,26 @@ def UpdateData():
         if not isinstance(event.message, TextMessage):
             continue
         
-        #command = event.message.text
+        command = event.message.text
 
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=event.message.text)
         )
-    '''
+    
+    iot_url = url + "/device/" + device_ID + "/rawdata"
+    data = {'id':sensor_ID, 'save':True, 'value':['168']}
     if len(command) > 0:
-        iot_url = url + "/device/" + device_ID + "/rawdata"
-        data = {'id':sensor_ID, 'save':True, 'value':['168']}
         data['value'].clear()
         data['value'].append(command)
         update_data.append(data)
-        json_data = json.dumps(update_data)
-        headers = {"Content-Type":"application/json","CK":device_key}
-        response = requests.post(iot_url, data = json_data, headers = headers)
-        return str(response.status_code)
     else:
-        return "NO COMMAND!"
-    '''
-    return 'OK'
-
+        update_data.append(data)
+    json_data = json.dumps(update_data)
+    headers = {"Content-Type":"application/json","CK":device_key}
+    response = requests.post(iot_url, data = json_data, headers = headers)
+    
+    return str(response.status_code)
 
 @app.route('/')
 def hello_world():
