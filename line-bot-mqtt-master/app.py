@@ -120,10 +120,9 @@ def handle_postback(event):
     elif event.postback.data == 'VIEW':
         pass
     elif event.postback.data == 'EXIT':
-        command = event.postback.data
-        SendDataToIoTPlatform(command)
-    else:
         pass
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.postback.data))
 
 def SendDataToIoTPlatform(command):
     if len(message) > 0:
