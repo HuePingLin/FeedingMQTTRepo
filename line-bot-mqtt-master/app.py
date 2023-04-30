@@ -95,6 +95,16 @@ def handle_text_message(event):
         headers = {"Content-Type":"application/json","CK":device_key}
         response = requests.post(iot_url, data = json_data, headers = headers)
         return str(response.status_code)
+    else:
+        iot_url = url + "/device/" + device_ID + "/rawdata"
+        data = {'id':sensor_ID, 'save':True, 'value':['168']}
+        data['value'].clear()
+        data['value'].append(command)
+        update_data.append(data)
+        json_data = json.dumps(update_data)
+        headers = {"Content-Type":"application/json","CK":device_key}
+        response = requests.post(iot_url, data = json_data, headers = headers)
+        return str(response.status_code)
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
@@ -102,7 +112,15 @@ def handle_postback(event):
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text='Start feeding.'))
         command = event.postback.data
-        SendDataToIoTPlatform(command)
+        iot_url = url + "/device/" + device_ID + "/rawdata"
+        data = {'id':sensor_ID, 'save':True, 'value':['168']}
+        data['value'].clear()
+        data['value'].append(command)
+        update_data.append(data)
+        json_data = json.dumps(update_data)
+        headers = {"Content-Type":"application/json","CK":device_key}
+        response = requests.post(iot_url, data = json_data, headers = headers)
+        return str(response.status_code)
     elif event.postback.data == 'VIEW':
         pass
     elif event.postback.data == 'EXIT':
@@ -112,6 +130,10 @@ def handle_postback(event):
         SendDataToIoTPlatform(command)
         pass
     else:
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(text='OTHERS.'))
+        command = event.postback.data
+        SendDataToIoTPlatform(command)
         pass
 
 def SendDataToIoTPlatform(command):
