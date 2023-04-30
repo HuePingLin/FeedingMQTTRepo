@@ -77,7 +77,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
-    command = 'AAA'
+    command = ''
     
     if len(text) > 0 and text.upper() == "ON":
         command = text.upper()
@@ -96,15 +96,11 @@ def handle_text_message(event):
         response = requests.post(iot_url, data = json_data, headers = headers)
         return str(response.status_code)
     else:
-        iot_url = url + "/device/" + device_ID + "/rawdata"
-        data = {'id':sensor_ID, 'save':True, 'value':['168']}
-        data['value'].clear()
-        data['value'].append(command)
-        update_data.append(data)
-        json_data = json.dumps(update_data)
-        headers = {"Content-Type":"application/json","CK":device_key}
-        response = requests.post(iot_url, data = json_data, headers = headers)
-        return str(response.status_code)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=event.message.text)
+        )
+
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
@@ -124,16 +120,9 @@ def handle_postback(event):
     elif event.postback.data == 'VIEW':
         pass
     elif event.postback.data == 'EXIT':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='Exit.'))
         command = event.postback.data
         SendDataToIoTPlatform(command)
-        pass
     else:
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='OTHERS.'))
-        command = event.postback.data
-        SendDataToIoTPlatform(command)
         pass
 
 def SendDataToIoTPlatform(command):
