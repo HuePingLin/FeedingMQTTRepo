@@ -119,13 +119,14 @@ def handle_postback(event):
         return str(response.status_code)
     elif event.postback.data == 'VIEW':
         pass
-    elif event.postback.data == 'EXIT':
-        pass
+    elif event.postback.data == 'Exit':
+        command = event.postback.data
+        SendDataToIoTPlatform(command=command)
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.postback.data))
 
 def SendDataToIoTPlatform(command):
-    if len(message) > 0:
+    if len(command) > 0:
         iot_url = url + "/device/" + device_ID + "/rawdata"
         data = {'id':sensor_ID, 'save':True, 'value':['168']}
         data['value'].clear()
